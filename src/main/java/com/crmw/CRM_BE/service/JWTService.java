@@ -4,6 +4,8 @@ package com.crmw.CRM_BE.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -13,7 +15,14 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode("MzJieXRlc2VjdXJlc2VjcmV0a2V5Zm9ySlcxMjU2fyt675dy5r6dfy65ckj"));
+    @Value("${JWT_SECRET_KEY}")
+    private String secretKey;
+    private SecretKey SECRET_KEY;
+
+    @PostConstruct
+    public void init() {
+        this.SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
+    }
 
     public String generateToken(String username) {
 
