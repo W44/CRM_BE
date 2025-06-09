@@ -10,5 +10,5 @@ public interface IDonerContextRepository extends JpaRepository<DonerContext, Int
     List<DonerContext> findByDoner(Doner doner);
     List<DonerContext> findByDoner_Id(Integer donerId);
 
-    
+
 }
