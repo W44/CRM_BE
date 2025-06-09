@@ -1,8 +1,6 @@
 package com.crmw.CRM_BE.entity;
 import jakarta.persistence.*;
-
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 
 @Entity
