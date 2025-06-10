@@ -17,8 +17,10 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import java.util.List;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
 
 
 @Configuration
@@ -31,35 +33,47 @@ public class SecurityConfig {
     @Autowired
     private JWTFilter jwtFilter;
 
+//
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.addAllowedOrigin("*"); // Allow all origins
+//        configuration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, etc.)
+//        configuration.addAllowedHeader("*"); // Allow all headers
+//        configuration.setAllowCredentials(true); // Allow credentials (if needed)
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration); // Apply to all paths
+//        return source;
+//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         //JwtRequestFilter jwtRequestFilter
         http
-            .cors(cors -> cors.configurationSource(request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOriginPatterns(List.of("*"));
-            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-            config.setAllowedHeaders(List.of("*"));
-            config.setAllowCredentials(true);
-            return config;
-        }))
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/v1/authenticate").permitAll()
-            .requestMatchers("/api/v1/register").permitAll()
-            //.requestMatchers("/api/v1/**").permitAll() // Allow public endpoints
-            .anyRequest().authenticated()
-        )
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOriginPatterns(List.of("*"));
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/authenticate").permitAll()
+                        .requestMatchers("/api/v1/register").permitAll()
+                        //.requestMatchers("/api/v1/**").permitAll() // Allow public endpoints
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-    return http.build();
-}
+        return http.build();
+    }
 
     @Bean
-    public AuthenticationProvider authenticationProvider()
-    {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
         daoAuthenticationProvider.setUserDetailsService(customUserDetailsService);
