@@ -1,6 +1,8 @@
 package com.crmw.CRM_BE.entity;
+
 import com.crmw.CRM_BE.enums.HistoryTypes;
 import jakarta.persistence.*;
+
 import java.time.Instant;
 
 @Entity
@@ -14,9 +16,8 @@ public class UserHistory {
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private HistoryTypes type;
+    private String type;
 
     @Column(columnDefinition = "TEXT")
     private String details;
@@ -56,11 +57,11 @@ public class UserHistory {
         this.createdAt = createdAt;
     }
 
-    public HistoryTypes getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(HistoryTypes type) {
+    public void setType(String type) {
         this.type = type;
     }
 }

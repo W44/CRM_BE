@@ -92,14 +92,14 @@ public class ImageController {
 
         UserHistory history = new UserHistory();
         history.setUser(currentUser);
-        history.setType(HistoryTypes.TRANSLATIONS);
-        //history.setDetails(String.join("\n", results));
+        history.setType(HistoryTypes.TRANSLATIONS.toString());
+        history.setDetails(results.get(0));
         history.setCreatedAt(Instant.now());
         iUserHistoryRepository.save(history);
 
 
         String translatedText = "Response from translation API";
-        return ResponseEntity.ok(translatedText);
+        return ResponseEntity.ok(results.get(0));
     }
 
 }
