@@ -15,5 +15,8 @@ public interface IUserHistoryRepository extends JpaRepository<UserHistory, Integ
     Optional<UserHistory> findByIdAndUser(Integer id, Users user);
     List<UserHistory> findByUser_Id(Integer userId);
     List<UserHistory> findByUser_Username(String username);
+    long countByUser_Id(Integer userId);
+    long countByType(HistoryTypes type);
+    long countByUser_IdAndType(Integer userId, HistoryTypes type);
 
 }

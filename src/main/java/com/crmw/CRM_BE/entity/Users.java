@@ -1,5 +1,8 @@
 package com.crmw.CRM_BE.entity;
+
 import jakarta.persistence.*;
+import org.hibernate.boot.model.internal.XMLContext;
+
 import java.time.Instant;
 
 
@@ -21,6 +24,9 @@ public class Users {
 
     @Column
     private Instant createdAt = Instant.now();
+
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean isactive = true;
 
     public Instant getCreatedAt() {
         return createdAt;
@@ -60,5 +66,13 @@ public class Users {
 
     public String getRole() {
         return role;
+    }
+
+    public boolean isIsactive() {
+        return isactive;
+    }
+
+    public void setIsactive(boolean isactive) {
+        this.isactive = isactive;
     }
 }
