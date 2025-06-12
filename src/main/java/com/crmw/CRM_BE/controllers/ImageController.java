@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -85,11 +84,8 @@ public class ImageController {
             return ResponseEntity.badRequest().body("Error: " + e);
         }
         //TODO: Return Text to the FE. Should Populate the text field in Add context Window
-        // TODO: Save logs to users History--- add details
-
 
         Users currentUser = getCurrentUser();
-
         UserHistory history = new UserHistory();
         history.setUser(currentUser);
         history.setType(HistoryTypes.TRANSLATIONS.toString());
@@ -98,7 +94,6 @@ public class ImageController {
         iUserHistoryRepository.save(history);
 
 
-        String translatedText = "Response from translation API";
         return ResponseEntity.ok(results.get(0));
     }
 
