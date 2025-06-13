@@ -85,6 +85,7 @@ public class ImageController {
         }
         //TODO: Return Text to the FE. Should Populate the text field in Add context Window
 
+        //TODO: this needs to be moved to user history service
         Users currentUser = getCurrentUser();
         UserHistory history = new UserHistory();
         history.setUser(currentUser);
