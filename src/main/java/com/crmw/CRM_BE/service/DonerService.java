@@ -16,6 +16,10 @@ public class DonerService {
     IDonerRepository iDonerRepository;
 
     public Doner saveDoner(Doner doner) {
+
+        if (doner.getId() != null && iDonerRepository.existsById(doner.getId())) {
+            throw new IllegalArgumentException("A Doner with this ID already exists.");
+        }
         return iDonerRepository.save(doner);
     }
 
@@ -44,7 +48,6 @@ public class DonerService {
         }
         return false;
     }
-
 
 
 }

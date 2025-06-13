@@ -1,5 +1,6 @@
 package com.crmw.CRM_BE.config;
 
+import com.crmw.CRM_BE.exceptions.CustomAuthenticationEntryPoint;
 import com.crmw.CRM_BE.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,14 +12,10 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
@@ -32,6 +29,9 @@ public class SecurityConfig {
 
     @Autowired
     private JWTFilter jwtFilter;
+
+    @Autowired
+    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
 //
 //    @Bean
@@ -49,7 +49,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        //JwtRequestFilter jwtRequestFilter
+
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
@@ -60,6 +60,9 @@ public class SecurityConfig {
                     return config;
                 }))
                 .csrf(csrf -> csrf.disable())
+                .exceptionHandling(exception -> exception
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/authenticate").permitAll()
                         .requestMatchers("/api/v1/register").permitAll()

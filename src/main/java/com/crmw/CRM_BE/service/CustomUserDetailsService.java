@@ -1,6 +1,7 @@
 package com.crmw.CRM_BE.service;
 
 import com.crmw.CRM_BE.entity.Users;
+import com.crmw.CRM_BE.exceptions.InactiveUserException;
 import com.crmw.CRM_BE.repository.IUsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -27,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
         if (!Boolean.TRUE.equals(user.isIsactive())) {
-            throw new UsernameNotFoundException("User is not active");
+            throw new InactiveUserException("User is not active");
         }
 
         return User.builder()
