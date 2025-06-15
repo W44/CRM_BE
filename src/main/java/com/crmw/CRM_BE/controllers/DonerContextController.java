@@ -1,7 +1,7 @@
 package com.crmw.CRM_BE.controllers;
 
 import com.crmw.CRM_BE.dto.DonerContextRequestDto;
-import com.crmw.CRM_BE.entity.Doner;
+import com.crmw.CRM_BE.dto.DonerContextResponseDto;
 import com.crmw.CRM_BE.entity.DonerContext;
 import com.crmw.CRM_BE.service.DonerContextService;
 import com.crmw.CRM_BE.repository.IDonerRepository;
@@ -13,7 +13,7 @@ import java.time.Instant;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/doner-contexts")
+@RequestMapping("/api/v1/doner-contexts")
 public class DonerContextController {
 
     @Autowired
@@ -34,21 +34,22 @@ public class DonerContextController {
         return ResponseEntity.ok(donerContextService.createDonerContext(dto.getDonerId(), context));
     }
 
-    // GET ALL
     @GetMapping
-    public ResponseEntity<List<DonerContext>> getAllDonerContexts() {
+    public ResponseEntity<List<DonerContextResponseDto>> getAllDonerContexts() {
         return ResponseEntity.ok(donerContextService.getAllDonerContexts());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getDonerContextById(@PathVariable Integer id) {
-        return donerContextService.getDonerContextById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        DonerContextResponseDto dto = donerContextService.getDonerContextById(id);
+        if (dto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/doner/{donerId}")
-    public ResponseEntity<List<DonerContext>> getByDonerId(@PathVariable Integer donerId) {
+    public ResponseEntity<List<DonerContextResponseDto>> getByDonerId(@PathVariable Integer donerId) {
         return ResponseEntity.ok(donerContextService.getDonerContextsByDonerId(donerId));
     }
 

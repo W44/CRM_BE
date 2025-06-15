@@ -48,11 +48,11 @@ public class UserHistoryService {
         return historyRepository.countByUser_Id(userId);
     }
 
-    public long countByType(HistoryTypes type) {
+    public long countByType(String type) {
         return historyRepository.countByType(type);
     }
 
-    public long countByUserIdAndType(Integer userId, HistoryTypes type) {
+    public long countByUserIdAndType(Integer userId, String type) {
         return historyRepository.countByUser_IdAndType(userId, type);
     }
 }

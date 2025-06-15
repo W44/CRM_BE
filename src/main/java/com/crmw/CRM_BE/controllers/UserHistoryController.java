@@ -33,13 +33,25 @@ public class UserHistoryController {
         return historyService.countByUserId(userId);
     }
 
-    @GetMapping("/count/type/{type}")
-    public long countByType(@PathVariable HistoryTypes type) {
+    @GetMapping("/count/type/{typeId}")
+    public long countByType(@PathVariable Integer typeId) {
+        String type;
+        try {
+            type = HistoryTypes.values()[typeId].toString();
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new RuntimeException("Invalid History Type ID: " + typeId);
+        }
         return historyService.countByType(type);
     }
 
-    @GetMapping("/count/user/{userId}/type/{type}")
-    public long countByUserAndType(@PathVariable Integer userId, @PathVariable HistoryTypes type) {
+    @GetMapping("/count/user/{userId}/type/{typeId}")
+    public long countByUserAndType(@PathVariable Integer userId, @PathVariable Integer typeId) {
+        String type;
+        try {
+            type = HistoryTypes.values()[typeId].toString();
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new RuntimeException("Invalid History Type ID: " + typeId);
+        }
         return historyService.countByUserIdAndType(userId, type);
     }
 }
