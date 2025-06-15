@@ -3,8 +3,8 @@ package com.crmw.CRM_BE.controllers;
 import com.crmw.CRM_BE.entity.UserHistory;
 import com.crmw.CRM_BE.entity.Users;
 import com.crmw.CRM_BE.enums.HistoryTypes;
-import com.crmw.CRM_BE.repository.IUserHistoryRepository;
 import com.crmw.CRM_BE.repository.IUsersRepository;
+import com.crmw.CRM_BE.service.UserHistoryService;
 import com.google.auth.oauth2.GoogleCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ import java.util.List;
 public class ImageController {
 
     @Autowired
-    IUserHistoryRepository iUserHistoryRepository;
+    UserHistoryService userHistoryService;
     @Autowired
     IUsersRepository iUsersRepository;
 
@@ -85,14 +85,11 @@ public class ImageController {
         }
         //TODO: Return Text to the FE. Should Populate the text field in Add context Window
 
-        //TODO: this needs to be moved to user history service
-        Users currentUser = getCurrentUser();
         UserHistory history = new UserHistory();
-        history.setUser(currentUser);
         history.setType(HistoryTypes.TRANSLATIONS.toString());
         history.setDetails(results.get(0));
         history.setCreatedAt(Instant.now());
-        iUserHistoryRepository.save(history);
+        userHistoryService.saveUserHistory(history);
 
 
         return ResponseEntity.ok(results.get(0));
