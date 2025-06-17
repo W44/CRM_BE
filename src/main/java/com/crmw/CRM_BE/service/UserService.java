@@ -55,16 +55,19 @@ public class UserService {
         return iUsersRepository.findById(id);
     }
 
-    public boolean updateUserStatus(Integer id,boolean active)
-    {
-         Optional<Users> userOptional = findById(id);
+    public boolean updateUserStatus(Integer id, boolean active) {
+        Optional<Users> userOptional = findById(id);
         if (userOptional.isEmpty()) {
             return false;
         }
 
-        Users user =userOptional.get();
+        Users user = userOptional.get();
         user.setIsactive(active);
         save(user);
         return true;
+    }
+
+    public Optional<Users> findUserByUsernameRaw(String username) {
+        return iUsersRepository.findByUsername(username);
     }
 }

@@ -1,6 +1,7 @@
 package com.crmw.CRM_BE.controllers;
 
 import com.crmw.CRM_BE.dto.AuthRequestDto;
+import com.crmw.CRM_BE.dto.ChangePasswordDto;
 import com.crmw.CRM_BE.dto.UserResponseDto;
 import com.crmw.CRM_BE.entity.Users;
 import com.crmw.CRM_BE.service.JWTService;
@@ -77,6 +78,28 @@ public class UsersController {
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
+
+    @PutMapping("/users/change-password")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDto dto, Authentication authentication) {
+        String username = authentication.getName();
+        Optional<Users> optionalUser = userService.findUserByUsernameRaw(username);
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found.");
+        }
+
+        Users user = optionalUser.get();
+
+        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Old password is incorrect.");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userService.save(user);
+        return ResponseEntity.ok("Password changed successfully.");
+    }
+
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
