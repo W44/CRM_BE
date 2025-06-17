@@ -4,7 +4,9 @@ package com.crmw.CRM_BE.service;
 import com.crmw.CRM_BE.entity.Doner;
 import com.crmw.CRM_BE.repository.IDonerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,8 +25,8 @@ public class DonerService {
         return iDonerRepository.save(doner);
     }
 
-    public List<Doner> getAllDoners() {
-        return iDonerRepository.findAll();
+    public Page<Doner> getAllDoners(Pageable pageable) {
+        return iDonerRepository.findAll(pageable);
     }
 
     public Optional<Doner> getDonerById(Integer id) {
@@ -36,6 +38,7 @@ public class DonerService {
                 .map(existing -> {
                     existing.setName(updatedDoner.getName());
                     existing.setEmail(updatedDoner.getEmail());
+                    existing.setPhone(updatedDoner.getPhone());
                     return iDonerRepository.save(existing);
                 })
                 .orElse(null);

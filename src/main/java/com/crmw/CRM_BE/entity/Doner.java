@@ -1,5 +1,7 @@
 package com.crmw.CRM_BE.entity;
+
 import jakarta.persistence.*;
+
 import java.time.Instant;
 
 @Entity
@@ -14,6 +16,9 @@ public class Doner {
 
     @Column(nullable = true)
     private String email;
+
+    @Column(nullable = true, length = 20)
+    private String phone;
 
     @Column
     private Instant createdAt = Instant.now();
@@ -40,6 +45,14 @@ public class Doner {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {

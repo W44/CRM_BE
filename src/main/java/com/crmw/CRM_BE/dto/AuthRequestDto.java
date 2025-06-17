@@ -1,11 +1,19 @@
 package com.crmw.CRM_BE.dto;
 
 
-
 public class AuthRequestDto {
     private String username;
     private String password;
     private String role;
+    private boolean isactive;
+
+    public boolean isIsactive() {
+        return isactive;
+    }
+
+    public void setIsactive(boolean isactive) {
+        this.isactive = isactive;
+    }
 
     public String getRole() {
         return role;

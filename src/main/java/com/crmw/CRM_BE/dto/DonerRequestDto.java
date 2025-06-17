@@ -4,6 +4,8 @@ public class DonerRequestDto {
     private Integer id;
     private String name;
     private String email;
+    private String phone;
+
 
     public DonerRequestDto() {
     }
@@ -36,5 +38,13 @@ public class DonerRequestDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

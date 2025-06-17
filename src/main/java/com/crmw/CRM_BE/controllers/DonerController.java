@@ -5,6 +5,10 @@ import com.crmw.CRM_BE.dto.DonerRequestDto;
 import com.crmw.CRM_BE.entity.Doner;
 import com.crmw.CRM_BE.service.DonerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,14 +34,23 @@ public class DonerController {
         doner.setId(donerdto.getId());
         doner.setName(donerdto.getName());
         doner.setEmail(donerdto.getEmail());
+        doner.setPhone(donerdto.getPhone());
 
         Doner saved = donerService.saveDoner(doner);
         return ResponseEntity.ok(saved);
     }
 
     @GetMapping
-    public ResponseEntity<List<Doner>> getAllDoners() {
-        return ResponseEntity.ok(donerService.getAllDoners());
+    public ResponseEntity<Page<Doner>> getAllDoners(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size,
+                                                    @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+        Sort sortOrder = Sort.by(Sort.Direction.fromString(sort[1]), sort[0]);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+        Page<Doner> donerPage = donerService.getAllDoners(pageable);
+
+        return ResponseEntity.ok(donerPage);
     }
 
     @GetMapping("/{id}")
@@ -53,6 +66,7 @@ public class DonerController {
         Doner doner = new Doner();
         doner.setName(donerdto.getName());
         doner.setEmail(donerdto.getEmail());
+        doner.setPhone(donerdto.getPhone());
 
         Doner updated = donerService.updateDoner(id, doner);
         if (updated == null) return ResponseEntity.notFound().build();
