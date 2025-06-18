@@ -43,12 +43,12 @@ public class DonerController {
     @GetMapping
     public ResponseEntity<Page<Doner>> getAllDoners(@RequestParam(defaultValue = "0") int page,
                                                     @RequestParam(defaultValue = "10") int size,
-                                                    @RequestParam(defaultValue = "id,asc") String[] sort) {
+                                                    @RequestParam(defaultValue = "id,asc") String[] sort,
+                                                    @RequestParam(required = false) String search) {
 
         Sort sortOrder = Sort.by(Sort.Direction.fromString(sort[1]), sort[0]);
         Pageable pageable = PageRequest.of(page, size, sortOrder);
-
-        Page<Doner> donerPage = donerService.getAllDoners(pageable);
+        Page<Doner> donerPage = donerService.getAllDoners(search,pageable);
 
         return ResponseEntity.ok(donerPage);
     }

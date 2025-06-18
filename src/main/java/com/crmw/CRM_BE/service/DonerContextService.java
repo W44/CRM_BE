@@ -70,10 +70,6 @@ public class DonerContextService {
         existing.setNotes(updatedContext.getNotes());
     }
 
-    if (updatedContext.getCreatedAt() != null) {
-        existing.setCreatedAt(updatedContext.getCreatedAt());
-    }
-
     DonerContext saved = donerContextRepository.save(existing);
     return DonerContextMapper.mapToDto(saved);
     }

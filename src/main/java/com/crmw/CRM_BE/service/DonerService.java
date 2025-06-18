@@ -25,8 +25,11 @@ public class DonerService {
         return iDonerRepository.save(doner);
     }
 
-    public Page<Doner> getAllDoners(Pageable pageable) {
-        return iDonerRepository.findAll(pageable);
+    public Page<Doner> getAllDoners(String search, Pageable pageable) {
+        if (search == null || search.trim().isEmpty()) {
+            return iDonerRepository.findAll(pageable);
+        }
+        return iDonerRepository.findByNameContainingIgnoreCaseOrId(search, pageable);
     }
 
     public Optional<Doner> getDonerById(Integer id) {
