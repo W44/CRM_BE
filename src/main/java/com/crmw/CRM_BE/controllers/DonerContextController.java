@@ -19,9 +19,6 @@ public class DonerContextController {
     @Autowired
     private DonerContextService donerContextService;
 
-    @Autowired
-    private IDonerRepository donerRepository;
-
 
     @PostMapping
     public ResponseEntity<?> createDonerContext(@RequestBody DonerContextRequestDto dto) {
