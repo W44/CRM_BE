@@ -83,7 +83,6 @@ public class ImageController {
             System.out.println("Error in translateImageToText Function : " + e);
             return ResponseEntity.badRequest().body("Error: " + e);
         }
-        //TODO: Return Text to the FE. Should Populate the text field in Add context Window
 
         UserHistory history = new UserHistory();
         history.setType(HistoryTypes.TRANSLATIONS.toString());

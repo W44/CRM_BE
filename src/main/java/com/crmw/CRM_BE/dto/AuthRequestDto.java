@@ -5,7 +5,7 @@ public class AuthRequestDto {
     private String username;
     private String password;
     private String role;
-    private boolean isactive;
+    private boolean isactive = true;
 
     public boolean isIsactive() {
         return isactive;

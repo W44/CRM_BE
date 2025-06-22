@@ -123,5 +123,25 @@ public class UsersController {
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
     }
 
+    @PostMapping("/admin/register-user")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> registerUserByAdmin(@RequestBody AuthRequestDto authRequestDto) {
+        String hashedPassword = passwordEncoder.encode(authRequestDto.getPassword());
+
+        Users newUser = new Users();
+        newUser.setUsername(authRequestDto.getUsername());
+        newUser.setPassword(hashedPassword);
+        newUser.setRole(authRequestDto.getRole());
+        boolean result = userService.save(newUser);
+
+
+        if (result) {
+            return ResponseEntity.ok("User registered successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("User registration failed.");
+        }
+    }
+
 
 }
