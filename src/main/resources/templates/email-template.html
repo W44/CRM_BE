@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Email</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.6;">
+
+    <img src="cid:logo" alt="Logo" style="width: 150px;" />
+
+    <p th:text="${date}">[Date]</p>
+
+    <p>
+        <strong th:text="${recipient_salutation}">[Recipient Name]</strong><br/>
+        <span th:text="${recipient_company}">[Company]</span><br/>
+        <span th:text="${recipient_address_line_1}">[Address Line 1]</span><br/>
+        <span th:text="${recipient_address_line_2}">[Address Line 2]</span><br/>
+        <span th:text="${recipient_city}">[City]</span>
+    </p>
+
+    <p>Dear <span th:text="${recipient_salutation}">[Name]</span>,</p>
+
+    <!-- Dynamic Paragraphs Start -->
+    <div th:each="para : ${paragraphs}">
+        <p th:text="${para}"></p>
+    </div>
+    <!-- Dynamic Paragraphs End -->
+
+    <p>Regards,</p>
+    <p>Abid Hussain<br/>
+    Director Marketing<br/>
+    0300-8451338</p>
+
+    <p style="text-align: center; color: blue; font-size: 12px; margin-top: 40px;">
+        Head Office: Namal Education Foundation 7-A, Abu Bakar Block, New Garden Town, Lahore. UAN: +92-42-111-1-NAMAL (62625)<br/>
+        Mianwali Office: Namal Institute, P.O. Box 22, GPO Mianwali, 30 Kilometer, Talagang Road, Mianwali, Pakistan. Tel: +92 459 236995<br/>
+        E-mail: marketing@namal.edu.pk | Website: www.namalknowledgecity.com | facebook.com/NamalKC
+    </p>
+
+</body>
+</html>
