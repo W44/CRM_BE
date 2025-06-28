@@ -4,14 +4,20 @@ package com.crmw.CRM_BE.controllers;
 import com.crmw.CRM_BE.dto.DonerRequestDto;
 import com.crmw.CRM_BE.entity.Doner;
 import com.crmw.CRM_BE.service.DonerService;
+import com.crmw.CRM_BE.service.RedisLockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+
+import java.time.Duration;
 import java.util.List;
 
 
@@ -21,6 +27,10 @@ public class DonerController {
 
     @Autowired
     private DonerService donerService;
+
+    @Autowired
+    private RedisLockService redisLockService;
+
 
     @PostMapping
     public ResponseEntity<?> createDoner(@RequestBody DonerRequestDto donerdto) {
@@ -48,7 +58,7 @@ public class DonerController {
 
         Sort sortOrder = Sort.by(Sort.Direction.fromString(sort[1]), sort[0]);
         Pageable pageable = PageRequest.of(page, size, sortOrder);
-        Page<Doner> donerPage = donerService.getAllDoners(search,pageable);
+        Page<Doner> donerPage = donerService.getAllDoners(search, pageable);
 
         return ResponseEntity.ok(donerPage);
     }
@@ -77,6 +87,30 @@ public class DonerController {
     public ResponseEntity<Void> deleteDoner(@PathVariable Integer id) {
         boolean deleted = donerService.deleteDoner(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}/unlock")
+    public ResponseEntity<?> unlockDonor(@PathVariable Integer id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        redisLockService.releaseLock(id, username);
+        return ResponseEntity.ok("Lock released.");
+    }
+
+    @PostMapping("/{id}/lock")
+    public ResponseEntity<?> lockDonor(@PathVariable Integer id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        boolean locked = redisLockService.tryLockDonor(id, username, 5 * 60);
+        if (!locked) {
+            String currentUser = redisLockService.getCurrentLocker(id);
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Donor is currently being contacted by: " + currentUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Locked for Editing");
+        }
     }
 
 }
