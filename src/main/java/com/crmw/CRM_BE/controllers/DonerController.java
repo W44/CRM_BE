@@ -109,7 +109,7 @@ public class DonerController {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Donor is currently being contacted by: " + currentUser);
         } else {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Locked for Editing");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("You’re now contacting this donor. Access is locked for other users until you finish.");
         }
     }
 
