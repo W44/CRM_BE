@@ -18,9 +18,18 @@ public class RedisLockService {
 
     public boolean tryLockDonor(Integer donorId, String username, long ttlSeconds) {
         String key = "donor:lock:" + donorId;
-        Boolean success = stringRedisTemplate.opsForValue()
-                .setIfAbsent(key, username, Duration.ofSeconds(ttlSeconds));
-        return Boolean.TRUE.equals(success);
+        String currentHolder = stringRedisTemplate.opsForValue().get(key);
+
+        if (currentHolder == null) {
+            Boolean success = stringRedisTemplate.opsForValue()
+                    .setIfAbsent(key, username, Duration.ofSeconds(ttlSeconds));
+            return Boolean.TRUE.equals(success);
+        } else if (currentHolder.equals(username)) {
+            stringRedisTemplate.expire(key, Duration.ofSeconds(ttlSeconds));
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String getCurrentLocker(Integer donorId) {
