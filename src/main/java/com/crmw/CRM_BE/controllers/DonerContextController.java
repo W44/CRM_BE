@@ -3,8 +3,8 @@ package com.crmw.CRM_BE.controllers;
 import com.crmw.CRM_BE.dto.DonerContextRequestDto;
 import com.crmw.CRM_BE.dto.DonerContextResponseDto;
 import com.crmw.CRM_BE.entity.DonerContext;
+import com.crmw.CRM_BE.service.ChatGPTService;
 import com.crmw.CRM_BE.service.DonerContextService;
-import com.crmw.CRM_BE.repository.IDonerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +18,9 @@ public class DonerContextController {
 
     @Autowired
     private DonerContextService donerContextService;
+
+    @Autowired
+    private ChatGPTService chatGPTService;
 
 
     @PostMapping
@@ -64,5 +67,11 @@ public class DonerContextController {
     public ResponseEntity<?> deleteDonerContext(@PathVariable Integer id) {
         donerContextService.deleteDonerContext(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/generatesummary/{id}")
+    public ResponseEntity<?> generateDonorContextSummary(@PathVariable Integer id) {
+        //TODO: add more validations
+        return chatGPTService.generateContextSummary(id);
     }
 }

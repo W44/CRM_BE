@@ -60,7 +60,7 @@ public class ChatGPTService {
                          - DO NOT include "Dear", "Hi", "Hello", or any greetings.
                          - DO NOT include "Regards", "Sincerely", "Best", or any sign-offs.
                          - ONLY generate the body paragraphs of the email, continuing the previous style and tone.
-                         - Keep the email under 300 words in total.
+                         - Keep the email under 500 words in total.
                          - Output only JSON, no explanations, no Markdown, and no additional text.
                          - If instructions conflict, prioritize removing greetings and sign-offs.
                          - If previous context included greetings or sign-offs, IGNORE them and continue with the core body only.

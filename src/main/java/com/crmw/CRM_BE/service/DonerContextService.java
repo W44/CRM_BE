@@ -60,18 +60,18 @@ public class DonerContextService {
 
     public DonerContextResponseDto updateDonerContext(Integer id, DonerContext updatedContext) {
         DonerContext existing = donerContextRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("DonerContext not found with ID: " + id));
+                .orElseThrow(() -> new RuntimeException("DonerContext not found with ID: " + id));
 
-    if (updatedContext.getTextContent() != null) {
-        existing.setTextContent(updatedContext.getTextContent());
-    }
+        if (updatedContext.getTextContent() != null) {
+            existing.setTextContent(updatedContext.getTextContent());
+        }
 
-    if (updatedContext.getNotes() != null) {
-        existing.setNotes(updatedContext.getNotes());
-    }
+        if (updatedContext.getNotes() != null) {
+            existing.setNotes(updatedContext.getNotes());
+        }
 
-    DonerContext saved = donerContextRepository.save(existing);
-    return DonerContextMapper.mapToDto(saved);
+        DonerContext saved = donerContextRepository.save(existing);
+        return DonerContextMapper.mapToDto(saved);
     }
 
     public void deleteDonerContext(Integer id) {
@@ -79,6 +79,22 @@ public class DonerContextService {
             throw new RuntimeException("DonerContext not found with ID: " + id);
         }
         donerContextRepository.deleteById(id);
+    }
+
+    public String convertDonorContextsToChatGPTContext(List<DonerContextResponseDto> donorContexts) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Previous donor interactions:\n");
+
+        for (DonerContextResponseDto dto : donorContexts) {
+            sb.append("-")
+                    //.append(" [")
+                    //.append(dto.getCreatedAt()).append("] ")
+                    //.append("Notes: ").append(dto.getNotes() != null ? dto.getNotes() : "None").append(" | ")
+                    .append("Content: ").append(dto.getTextContent() != null ? dto.getTextContent() : "None")
+                    .append("\n");
+        }
+
+        return sb.toString();
     }
 
 
