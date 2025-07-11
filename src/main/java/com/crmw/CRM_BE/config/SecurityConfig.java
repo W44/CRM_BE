@@ -68,6 +68,7 @@ public class SecurityConfig  {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/authenticate").permitAll()
                         .requestMatchers("/api/v1/register").permitAll()
+                        .requestMatchers("/api/v1/auth/google/callback").permitAll()
                         //.requestMatchers("/api/v1/**").permitAll() // Allow public endpoints
                         .anyRequest().authenticated()
                 )
