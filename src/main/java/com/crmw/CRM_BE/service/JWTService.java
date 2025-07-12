@@ -40,6 +40,21 @@ public class JWTService {
                 .compact();
     }
 
+    public String generateToken(String username, Integer timeMilliSeconds) {
+
+        Map<String, Object> claims = new HashMap<>();
+
+
+        return Jwts.builder()
+                .claims()
+                .add(claims)
+                .subject(username)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * timeMilliSeconds))
+                .and()
+                .signWith(SECRET_KEY)
+                .compact();
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

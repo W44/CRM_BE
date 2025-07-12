@@ -14,6 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -22,6 +25,7 @@ import jakarta.mail.Session;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -80,12 +84,19 @@ public class EmailService {
 
         String accessToken = gmailCredentialService.getDecryptedAccessToken();
 
-        GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
+        AccessToken token = new AccessToken(accessToken, null);
+        GoogleCredentials credentials = GoogleCredentials.newBuilder()
+                .setAccessToken(token)
+                .build()
+                .createScoped(List.of("https://www.googleapis.com/auth/gmail.send"));
+
+        HttpCredentialsAdapter adapter = new HttpCredentialsAdapter(credentials);
 
         Gmail service = new Gmail.Builder(
                 new NetHttpTransport(),
                 GsonFactory.getDefaultInstance(),
-                credential)
+                adapter
+        )
                 .setApplicationName("CRM_BE")
                 .build();
 
