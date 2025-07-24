@@ -2,10 +2,18 @@ package com.crmw.CRM_BE.service;
 
 import com.crmw.CRM_BE.entity.AssignedTask;
 import com.crmw.CRM_BE.entity.Users;
+import com.crmw.CRM_BE.enums.TasksEnums;
+import com.crmw.CRM_BE.enums.UserTypes;
 import com.crmw.CRM_BE.repository.IAssignedTaskRepository;
 import com.crmw.CRM_BE.repository.IUsersRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +39,7 @@ public class AssignedTaskService {
     }
 
     public AssignedTask createTask(AssignedTask task) {
-        task.setStatus("pending"); // Default status on creation
+        task.setStatus(TasksEnums.Status.PENDING.toString());
         return assignedTaskRepository.save(task);
     }
 
@@ -97,14 +105,33 @@ public class AssignedTaskService {
         return assignedTaskRepository.findByAssignedToId(userId);
     }
 
-    public List<AssignedTask> searchTasks(String searchTerm) {
-        Integer searchId = null;
-        try {
-            searchId = Integer.parseInt(searchTerm);
-        } catch (NumberFormatException ignored) {
+    public Page<AssignedTask> searchTasks(String query,String status, boolean myTasks, Pageable pageable) {
+
+        Users currentUser = getCurrentUser();
+
+        if (status != null && !status.isEmpty()) {
+            try {
+                TasksEnums.Status.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status value: " + status);
+            }
+        } else {
+            status = null;
         }
 
-        return assignedTaskRepository.searchTasksPaged(searchTerm, searchId);
+        if (myTasks) {
+            return assignedTaskRepository.searchMyTasks(query, status, currentUser.getUsername(), pageable);
+        } else {
+            if (!currentUser.getRole().equals(UserTypes.ADMIN.toString())) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only admins can access all tasks.");
+            }
+            return assignedTaskRepository.searchAllTasks(query, status, pageable);
+        }
+    }
 
+    public Users getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usersRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 }

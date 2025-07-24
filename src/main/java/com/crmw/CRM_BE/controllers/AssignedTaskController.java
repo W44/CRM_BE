@@ -6,7 +6,12 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -55,8 +60,19 @@ public class AssignedTaskController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<AssignedTask>> searchTasks(@RequestParam String query) {
-        List<AssignedTask> tasks = assignedTaskService.searchTasks(query);
+    public ResponseEntity<Page<AssignedTask>> searchTasks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,asc") String[] sort,
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "false") boolean myTasks) {
+
+        Sort sortOrder = Sort.by(Sort.Direction.fromString(sort[1]), sort[0]);
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+        Page<AssignedTask> tasks = assignedTaskService.searchTasks(query, status, myTasks, pageable);
+
         return ResponseEntity.ok(tasks);
     }
 
@@ -68,6 +84,7 @@ public class AssignedTaskController {
         List<AssignedTask> tasks = assignedTaskService.getTasksByStatusandUserId(status, userId);
         return ResponseEntity.ok(tasks);
     }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<AssignedTask>> getTasksByUserId(
             @PathVariable Long userId) {
