@@ -27,27 +27,27 @@ public interface IAssignedTaskRepository extends JpaRepository<AssignedTask, Lon
                                         @Param("searchId") Integer searchId);
 
     @Query(value = """
-  SELECT * FROM assigned_task t
-   WHERE ( CAST(:query AS TEXT) IS NULL
-       OR LOWER(t.title) LIKE LOWER(CONCAT('%', CAST(:query AS TEXT), '%'))
-       OR LOWER(t.description) LIKE LOWER(CONCAT('%', CAST(:query AS TEXT), '%')) )
-     AND ( :status IS NULL OR t.status = CAST(:status AS TEXT) )
-     AND t.assigned_to_name = :username
-  """,
-  nativeQuery = true)
+            SELECT * FROM assigned_task t
+             WHERE ( CAST(:query AS TEXT) IS NULL
+                 OR LOWER(t.title) LIKE LOWER(CONCAT('%', CAST(:query AS TEXT), '%'))
+                 OR LOWER(t.description) LIKE LOWER(CONCAT('%', CAST(:query AS TEXT), '%')) )
+               AND ( :status IS NULL OR t.status = CAST(:status AS TEXT) )
+               AND t.assigned_to_name = :username
+            """,
+            nativeQuery = true)
     Page<AssignedTask> searchMyTasks(@Param("query") String query,
                                      @Param("status") String status,
                                      @Param("username") String username,
                                      Pageable pageable);
 
     @Query(value = """
-  SELECT * FROM assigned_task t
-   WHERE ( CAST(:query AS TEXT) IS NULL
-       OR LOWER(t.title) LIKE LOWER(CONCAT('%', CAST(:query AS TEXT), '%'))
-       OR LOWER(t.description) LIKE LOWER(CONCAT('%', CAST(:query AS TEXT), '%')) )
-     AND ( :status IS NULL OR t.status = CAST(:status AS TEXT) )
-  """,
-  nativeQuery = true)
+            SELECT * FROM assigned_task t
+             WHERE ( CAST(:query AS TEXT) IS NULL
+                 OR LOWER(t.title) LIKE LOWER(CONCAT('%', CAST(:query AS TEXT), '%'))
+                 OR LOWER(t.description) LIKE LOWER(CONCAT('%', CAST(:query AS TEXT), '%')) )
+               AND ( :status IS NULL OR t.status = CAST(:status AS TEXT) )
+            """,
+            nativeQuery = true)
     Page<AssignedTask> searchAllTasks(@Param("query") String query,
                                       @Param("status") String status,
                                       Pageable pageable);
