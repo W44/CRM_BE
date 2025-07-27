@@ -1,6 +1,6 @@
 package com.crmw.CRM_BE.enums;
 
-public enum EmailStatus {
+public enum EmailStatusEnums {
     PASS,
     FAIL
 }
